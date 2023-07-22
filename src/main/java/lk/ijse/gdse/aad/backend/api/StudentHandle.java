@@ -17,6 +17,8 @@ import java.sql.*;
 public class StudentHandle extends HttpServlet {
     Connection connection;
     private static final String SaveStudentData = "INSERT INTO student(name,email,city,level) VALUES (?,?,?,?)";
+
+
     @Override
     public void init() throws ServletException {
 
@@ -32,9 +34,10 @@ public class StudentHandle extends HttpServlet {
         }
     }
 
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse rsp) throws ServletException, IOException {
-             if(req.getContentType() == null || req.getContentType().toLowerCase().startsWith("application/json")){
+             if(req.getContentType() == null || !req.getContentType().toLowerCase().startsWith("application/json")){
                  rsp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
              }
         try {
