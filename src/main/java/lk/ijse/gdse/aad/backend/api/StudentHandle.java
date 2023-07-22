@@ -4,11 +4,14 @@ import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import lk.ijse.gdse.aad.backend.dto.StudentDTO;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.sql.*;
@@ -22,19 +25,27 @@ public class StudentHandle extends HttpServlet {
     @Override
     public void init() throws ServletException {
 
+//        try {
+//            Class.forName(getServletContext().getInitParameter("mysql-driver"));
+//            String username = getServletContext().getInitParameter("db-user");
+//            String password = getServletContext().getInitParameter("db-pw");
+//            String url = getServletContext().getInitParameter("db-url");
+//            this.connection = DriverManager.getConnection(url,username,password);
+//
+//        } catch (ClassNotFoundException | SQLException ex) {
+//            throw new RuntimeException(ex);
+//        }
         try {
-            Class.forName(getServletContext().getInitParameter("mysql-driver"));
-            String username = getServletContext().getInitParameter("db-user");
-            String password = getServletContext().getInitParameter("db-pw");
-            String url = getServletContext().getInitParameter("db-url");
-            this.connection = DriverManager.getConnection(url,username,password);
+            InitialContext ctx = new InitialContext();
+            DataSource pool = (DataSource) ctx.lookup("java:comp/env/jdbc/student");
+            this.connection = pool.getConnection();
 
-        } catch (ClassNotFoundException | SQLException ex) {
-            throw new RuntimeException(ex);
+
+        } catch (NamingException | SQLException e) {
+            throw new RuntimeException(e);
         }
+
     }
-
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse rsp) throws ServletException, IOException {
              if(req.getContentType() == null || !req.getContentType().toLowerCase().startsWith("application/json")){
