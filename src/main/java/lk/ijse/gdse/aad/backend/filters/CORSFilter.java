@@ -6,10 +6,11 @@ import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-@WebFilter(filterName = "CORSFilter",urlPatterns = "/*")
+@WebFilter
 public class CORSFilter extends HttpFilter {
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
+        System.out.println("CORS filter");
         String origin = req.getHeader("Origin");
         if(origin.contains("http://127.0.0.1:5500")){
             //System.out.println("CORS OK");
